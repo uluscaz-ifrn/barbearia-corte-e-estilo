@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Agenda do Dia{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-1"><i class="bi bi-calendar-check text-warning"></i> Painel de Agendamentos</h2>
+        <p class="text-muted">Acompanhe os horários e atendimentos em tempo real.</p>
+    </div>
+    <div class="col-md-5 text-md-end">
+        <a href="{{ url_for('novo_agendamento') }}" class="btn btn-warning fw-semibold shadow-sm">
+            <i class="bi bi-plus-lg"></i> Novo Agendamento
+        </a>
+    </div>
+</div>
+
+<!-- Filtro de Data e Métricas -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body bg-white rounded">
+        <form method="GET" action="{{ url_for('index') }}" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="data" class="form-label fw-bold">Filtrar por Data:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" class="form-control" id="data" name="data" value="{{ data_filtro }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-dark w-100">
+                    <i class="bi bi-filter"></i> Filtrar Agenda
+                </button>
+            </div>
+            <div class="col-md-5 text-md-end">
+                <span class="badge bg-secondary p-2">Exibindo data: <strong>{{ data_filtro }}</strong></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cards de Resumo do Dia -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase mb-1">Total Marcados</h6>
+                        <h3 class="fw-bold mb-0">{{ total_agendamentos }}</h3>
+                    </div>
+                    <i class="bi bi-list-task fs-1 text-white-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase mb-1">Atendimentos Ativos</h6>
+                        <h3 class="fw-bold mb-0">{{ total_ativos }}</h3>
+                    </div>
+                    <i class="bi bi-person-check fs-1 text-white-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-dark text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase mb-1">Previsão Faturamento</h6>
+                        <h3 class="fw-bold text-warning mb-0">R$ {{ "%.2f"|format(faturamento_previsto) }}</h3>
+                    </div>
+                    <i class="bi bi-cash-stack fs-1 text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Agendamentos -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="card-title fw-bold mb-0">Horários Agendados</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Horário</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Contato</th>
+                    <th scope="col">Profissional</th>
+                    <th scope="col">Serviço</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if agendamentos %}
+                    {% for a in agendamentos %}
+                    <tr class="{% if a.status == 'Cancelado' %}table-light text-muted{% endif %}">
+                        <td class="fw-bold">
+                            <i class="bi bi-clock me-1 text-primary"></i> {{ a.hora_agendamento }}
+                        </td>
+                        <td class="fw-semibold">{{ a.cliente_nome }}</td>
+                        <td>{{ a.cliente_telefone }}</td>
+                        <td>{{ a.profissional_nome }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ a.servico_nome }}</span>
+                            <small class="text-muted d-block">({{ a.servico_duracao }} min)</small>
+                        </td>
+                        <td class="fw-bold text-success">R$ {{ "%.2f"|format(a.servico_preco) }}</td>
+                        <td>
+                            {% if a.status == 'Agendado' %}
+                                <span class="badge bg-success">Confirmado</span>
+                            {% elif a.status == 'Cancelado' %}
+                                <span class="badge bg-danger">Cancelado</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ a.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if a.status != 'Cancelado' %}
+                                <form method="POST" action="{{ url_for('cancelar_agendamento', id=a.id) }}" class="d-inline" onsubmit="return confirm('Tem certeza que deseja cancelar este agendamento?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar Agendamento">
+                                        <i class="bi bi-x-circle"></i> Cancelar
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted small">Sem ações</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Nenhum agendamento encontrado para o dia <strong>{{ data_filtro }}</strong>.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

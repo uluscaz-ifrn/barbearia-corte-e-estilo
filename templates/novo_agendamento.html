@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Agendamento{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="bi bi-calendar-plus text-warning"></i> Agendar Atendimento</h2>
+                <p class="text-muted">Preencha os dados abaixo para registrar o horário do cliente.</p>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar à Agenda
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-dark text-white py-3">
+                <h5 class="card-title mb-0"><i class="bi bi-clipboard2-check"></i> Formulário de Agendamento</h5>
+            </div>
+            <div class="card-body p-4">
+                
+                <div class="alert alert-info py-2 mb-4 d-flex align-items-center">
+                    <i class="bi bi-shield-check fs-4 me-2"></i>
+                    <small><strong>Regra de Validação Ativa:</strong> O sistema verifica automaticamente a disponibilidade de agenda do barbeiro, bloqueando duplicidades no mesmo horário.</small>
+                </div>
+
+                <form method="POST" action="{{ url_for('novo_agendamento') }}">
+                    <div class="row g-3">
+                        
+                        <!-- Selecionar Cliente -->
+                        <div class="col-md-12">
+                            <label for="cliente_id" class="form-label fw-bold">Cliente *</label>
+                            <div class="input-group">
+                                <select class="form-select" id="cliente_id" name="cliente_id" required>
+                                    <option value="" selected disabled>-- Selecione um cliente cadastrado --</option>
+                                    {% for c in clientes %}
+                                        <option value="{{ c.id }}">{{ c.nome }} ({{ c.telefone }})</option>
+                                    {% endfor %}
+                                </select>
+                                <a href="{{ url_for('clientes') }}" class="btn btn-outline-dark" title="Cadastrar novo cliente">
+                                    <i class="bi bi-person-plus"></i> Novo Cliente
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Selecionar Profissional (Barbeiro) -->
+                        <div class="col-md-6">
+                            <label for="profissional_id" class="form-label fw-bold">Profissional (Barbeiro) *</label>
+                            <select class="form-select" id="profissional_id" name="profissional_id" required>
+                                <option value="" selected disabled>-- Escolha o profissional --</option>
+                                {% for p in profissionais %}
+                                    <option value="{{ p.id }}">{{ p.nome }} - {{ p.especialidade }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Selecionar Serviço -->
+                        <div class="col-md-6">
+                            <label for="servico_id" class="form-label fw-bold">Serviço *</label>
+                            <select class="form-select" id="servico_id" name="servico_id" required>
+                                <option value="" selected disabled>-- Escolha o serviço --</option>
+                                {% for s in servicos %}
+                                    <option value="{{ s.id }}">{{ s.nome }} - R$ {{ "%.2f"|format(s.preco) }} ({{ s.duracao_min }} min)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Data do Agendamento -->
+                        <div class="col-md-6">
+                            <label for="data_agendamento" class="form-label fw-bold">Data do Atendimento *</label>
+                            <input type="date" class="form-control" id="data_agendamento" name="data_agendamento" value="{{ hoje }}" required>
+                        </div>
+
+                        <!-- Horário do Agendamento -->
+                        <div class="col-md-6">
+                            <label for="hora_agendamento" class="form-label fw-bold">Horário *</label>
+                            <select class="form-select" id="hora_agendamento" name="hora_agendamento" required>
+                                <option value="" selected disabled>-- Escolha um horário --</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                            </select>
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="col-md-12">
+                            <label for="observacoes" class="form-label fw-semibold">Observações (opcional)</label>
+                            <textarea class="form-control" id="observacoes" name="observacoes" rows="2" placeholder="Ex: Cliente prefere máquina 2 na lateral, lavar antes do corte..."></textarea>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="col-md-12 text-end pt-3">
+                            <a href="{{ url_for('index') }}" class="btn btn-light border me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-warning fw-bold px-4">
+                                <i class="bi bi-check2-circle"></i> Confirmar Agendamento
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

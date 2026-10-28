@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Barbearia Estilo & Corte{% endblock %} - Sistema de Agendamento</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-warning" href="{{ url_for('index') }}">
+                <i class="bi bi-scissors"></i> Barbearia Estilo & Corte
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active text-warning{% endif %}" href="{{ url_for('index') }}">
+                            <i class="bi bi-calendar3"></i> Agenda do Dia
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'novo_agendamento' %}active text-warning{% endif %}" href="{{ url_for('novo_agendamento') }}">
+                            <i class="bi bi-plus-circle"></i> Novo Agendamento
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'clientes' %}active text-warning{% endif %}" href="{{ url_for('clientes') }}">
+                            <i class="bi bi-people"></i> Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'servicos' %}active text-warning{% endif %}" href="{{ url_for('servicos') }}">
+                            <i class="bi bi-tag"></i> Serviços
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mensagens Flash (Sucesso, Alertas, Erros) -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        {% if category == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
+                        {% if category == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
+                        {% if category == 'warning' %}<i class="bi bi-exclamation-circle-fill me-2"></i>{% endif %}
+                        {% if category == 'info' %}<i class="bi bi-info-circle-fill me-2"></i>{% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Rodapé Acadêmico -->
+    <footer class="bg-dark text-white text-center py-3 mt-5 border-top">
+        <div class="container">
+            <small class="text-secondary">
+                Projeto Integrado Interdisciplinar - ADS | Protótipo Funcional: Python Flask & SQLite
+            </small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
