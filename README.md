@@ -6,7 +6,7 @@ Trata-se de uma aplicação web completa desenvolvida com **Python**, framework 
 
 ---
 
-## 📋 Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
 1. **Agenda do Dia & Painel de Controle (Dashboard):**
    - Visualização dos horários marcados por data.
@@ -27,7 +27,7 @@ Trata-se de uma aplicação web completa desenvolvida com **Python**, framework 
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Linguagem:** Python 3.12
 - **Framework Web:** Flask 3.1.0
@@ -37,24 +37,19 @@ Trata-se de uma aplicação web completa desenvolvida com **Python**, framework 
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
-### 1. Clonar ou Acessar o Diretório
-```bash
-cd happy-galileo
-```
-
-### 2. Instalar as Dependências
+### 1. Instalar as Dependências
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Inicializar o Banco de Dados (Opcional, pois é criado automaticamente)
+### 2. Inicializar o Banco de Dados (Opcional, pois é criado automaticamente)
 ```bash
 python database.py
 ```
 
-### 4. Executar o Servidor Flask
+### 3. Executar o Servidor Flask
 ```bash
 python app.py
 ```
@@ -62,7 +57,7 @@ Acesse no seu navegador: `http://127.0.0.1:5000`
 
 ---
 
-## 🧪 Como Executar os Casos de Teste (Fase 5)
+## Como Executar os Casos de Teste (Fase 5)
 
 Para validar automaticamente os 5 casos de teste previstos na especificação do projeto acadêmico:
 ```bash
